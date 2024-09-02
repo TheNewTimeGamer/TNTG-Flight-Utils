@@ -1,0 +1,8 @@
+## Interface: 110002
+## Title: Flight Utils
+## Author: TheNewTimeGamer
+## Version: 1.0
+## Notes: Expanded utils for dynamic flight.
+## SavedVariables: TNTGFlightUtils
+
+FlightUtils.lua

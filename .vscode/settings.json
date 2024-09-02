@@ -1,0 +1,13 @@
+{
+    "Lua.diagnostics.globals": [
+        "Enum",
+        "UnitPower",
+        "UnitPowerMax",
+        "C_PlayerInfo",
+        "CreateFrame",
+        "C_UnitAuras",
+        "EncounterBar",
+        "C_UIWidgetManager",
+        "UIParent"
+    ]
+}
