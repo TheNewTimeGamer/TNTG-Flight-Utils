@@ -29,8 +29,8 @@ overlayFrame.texture:SetAllPoints(true);
 
 local speedFrame = CreateFrame("Frame", "TNTG-Element-Speed", containerFrame);
 speedFrame:SetFrameStrata("LOW");
-speedFrame:SetSize(195, 8);
-speedFrame:SetPoint("TOPLEFT", containerFrame, "TOPLEFT", 3, -2);
+speedFrame:SetSize(195, 7);
+speedFrame:SetPoint("TOPLEFT", containerFrame, "TOPLEFT", 3, -3);
 
 speedFrame.texture = speedFrame:CreateTexture(nil, "BACKGROUND");
 speedFrame.texture:SetPoint("TOP", speedFrame, "TOP", 0, 0);
