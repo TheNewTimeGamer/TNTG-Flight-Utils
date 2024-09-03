@@ -5,15 +5,10 @@
 
 -- Reference: https://wowpedia.fandom.com/wiki/UNIT_AURA
 
-TNTGFlightUtils = TNTGFlightUtils or {
-    offsetX = 0,
-    offsetY = -180
-}
-
 local containerFrame = CreateFrame("Frame", "TNTG-Container-Vigor");
 containerFrame:SetFrameStrata("BACKGROUND");
 containerFrame:SetSize(200, 25);
-containerFrame:SetPoint("CENTER", UIParent, "CENTER", TNTGFlightUtils.offsetX, TNTGFlightUtils.offsetY);
+containerFrame:SetPoint("CENTER", EncounterBar, "CENTER", 0, 0);
 
 containerFrame:EnableMouse(true)
 containerFrame:SetMovable(true)
@@ -22,27 +17,6 @@ containerFrame:SetClampedToScreen(true)
 containerFrame.texture = containerFrame:CreateTexture(nil, "BACKGROUND");
 containerFrame.texture:SetTexture("Interface\\AddOns\\TNTG-Flight-Utils\\backdrop.png");
 containerFrame.texture:SetAllPoints(true);
-
-local isDragging = false
-local function onMouseDown(self, button)
-    if button == "LeftButton" then
-        isDragging = true
-        self:StartMoving()
-    end
-end
-
-local function onMouseUp(self)
-    if isDragging then
-        isDragging = false
-        local xPos, yPos = self:GetCenter()
-        TNTGFlightUtils.offsetX = xPos;
-        TNTGFlightUtils.offsetY = yPos;
-        self:StopMovingOrSizing()
-    end
-end
-
-containerFrame:SetScript("OnMouseDown", onMouseDown)
-containerFrame:SetScript("OnMouseUp", onMouseUp)
 
 local overlayFrame = CreateFrame("Frame", "TNTG-Overlay-Vigor", containerFrame);
 overlayFrame:SetFrameStrata("HIGH");
@@ -98,7 +72,15 @@ speedFrame:SetScript("OnUpdate", updateSpeed);
 -- We don't want a raid fight's encounter bar to be hidden because someone uses this addon.
 local function setVisible(visible)
     containerFrame:SetShown(visible);
-    EncounterBar:SetShown(not visible);
+
+    -- Make the EncounterBar fully transparent as hidding it with SetShown makes it not update correctly.
+    if EncounterBar then
+        if visible then
+            EncounterBar:SetAlpha(0);
+        else
+            EncounterBar:SetAlpha(1);
+        end
+    end
 end
 
 local function updateVigor(self, event, info)
