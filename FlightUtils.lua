@@ -83,17 +83,35 @@ local function setVisible(visible)
     end
 end
 
-local function updateVigor(self, event, info)
-    if event == "PLAYER_ENTERING_WORLD" then
-        local _, canGlide = C_PlayerInfo.GetGlidingInfo();
+-- Both checks just in case a movie directly follows a cinematic or vice versa.
+local isInMovie = false;
+local isInCinematic = false;
 
-        -- If we're not able to use dynamic flight, we hide.
-        if not canGlide then
-            setVisible(false);
-        else
-            setVisible(true);
-        end
-    elseif event == "UPDATE_UI_WIDGET" then
+local function updateVigor(self, event, info)
+    local _, canGlide = C_PlayerInfo.GetGlidingInfo();
+    -- If we're not able to use dynamic flight, we hide.
+    if not canGlide then
+        setVisible(false);
+        return;
+    end
+
+    if event == "CINEMATIC_START" then
+        isInCinematic = true;
+    elseif event == "CINEMATIC_STOP" then
+        isInCinematic = false;
+    elseif event == "PLAY_MOVIE" then
+        isInMovie = true;
+    elseif event == "STOP_MOVIE" then
+        isInMovie = false;
+    end
+
+    -- If we're in a cinematic or movie, we hide.
+    if isInCinematic or isInMovie then
+        setVisible(false);
+        return;
+    end
+       
+    if event == "UPDATE_UI_WIDGET" then
         if info.widgetSetID == C_UIWidgetManager.GetPowerBarWidgetSetID() then
             local widgetInfo = C_UIWidgetManager.GetFillUpFramesWidgetVisualizationInfo(info.widgetID)
 
@@ -113,15 +131,20 @@ local function updateVigor(self, event, info)
                 return;
             end
 
-            setVisible(true);
-
             self.texture:SetWidth(self:GetWidth() * (vigor / maxVigor) +
                 fillProgress * (self:GetWidth() / widgetInfo.numTotalFrames));
             chargesFrame.texture:SetWidth(self:GetWidth() * (vigor / maxVigor));
         end
     end
+
+    -- If we passed all the checks (no return was called) we show the flight utils bar.
+    setVisible(true);
 end
 
 vigorFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 vigorFrame:RegisterEvent("UPDATE_UI_WIDGET");
+vigorFrame:RegisterEvent("CINEMATIC_START");
+vigorFrame:RegisterEvent("CINEMATIC_STOP");
+vigorFrame:RegisterEvent("PLAY_MOVIE");
+vigorFrame:RegisterEvent("STOP_MOVIE");
 vigorFrame:SetScript("OnEvent", updateVigor);
