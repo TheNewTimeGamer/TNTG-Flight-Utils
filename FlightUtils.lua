@@ -95,22 +95,6 @@ local function updateVigor(self, event, info)
         return;
     end
 
-    if event == "CINEMATIC_START" then
-        isInCinematic = true;
-    elseif event == "CINEMATIC_STOP" then
-        isInCinematic = false;
-    elseif event == "PLAY_MOVIE" then
-        isInMovie = true;
-    elseif event == "STOP_MOVIE" then
-        isInMovie = false;
-    end
-
-    -- If we're in a cinematic or movie, we hide.
-    if isInCinematic or isInMovie then
-        setVisible(false);
-        return;
-    end
-       
     if event == "UPDATE_UI_WIDGET" then
         if info.widgetSetID == C_UIWidgetManager.GetPowerBarWidgetSetID() then
             local widgetInfo = C_UIWidgetManager.GetFillUpFramesWidgetVisualizationInfo(info.widgetID)
@@ -135,6 +119,20 @@ local function updateVigor(self, event, info)
                 fillProgress * (self:GetWidth() / widgetInfo.numTotalFrames));
             chargesFrame.texture:SetWidth(self:GetWidth() * (vigor / maxVigor));
         end
+    elseif event == "CINEMATIC_START" then
+        isInCinematic = true;
+    elseif event == "CINEMATIC_STOP" then
+        isInCinematic = false;
+    elseif event == "PLAY_MOVIE" then
+        isInMovie = true;
+    elseif event == "STOP_MOVIE" then
+        isInMovie = false;
+    end
+
+    -- If we're in a cinematic or movie, we hide.
+    if isInCinematic or isInMovie then
+        setVisible(false);
+        return;
     end
 
     -- If we passed all the checks (no return was called) we show the flight utils bar.
